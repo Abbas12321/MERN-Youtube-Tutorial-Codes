@@ -1,0 +1,7 @@
+4.20.2  
+
+4 main version   >>> 
+
+18 bug/feature   >>> recommended
+
+2 optional   >>> optional

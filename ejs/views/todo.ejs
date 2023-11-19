@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TodoList</title>
+</head>
+<body>
+    <h3><%= formatDate %></h3>
+    <ul>
+        <li>gaming</li>
+        <li>coding</li>
+        <li>fighting</li>
+
+        <% for(i=0; i< newListItems.length; i++) { %>
+            <li> <%= newListItems[i] %> </li>
+        <% } %>
+ 
+        <form action="/" method="post">
+            <input type="text" name="data" autocomplete="off">
+            <button type="submit"> Add </button>
+        </form>
+    </ul>
+</body>
+</html>
