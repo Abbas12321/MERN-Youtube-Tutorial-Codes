@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../auth');
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
 // Home page
 router.get('/', auth.verifyToken, (req, res) => {
@@ -21,7 +22,8 @@ router.post('/signup', async (req, res) => {
   const { username, password, role } = req.body;
 
   try {
-    const user = await User.create({ username, password, role });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ username, password : hashedPassword , role });
     const token = auth.generateToken({ username, role });
     console.log("token", token)
     console.log('User created:', user);
@@ -41,14 +43,18 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  const user = await User.findOne({ username, password });
+  const user = await User.findOne({ username });
 
   if (user) {
-    const token = auth.generateToken({ username, role: user.role });
-    console.log("token", token)
-    console.log('Login successful:', user);
-    res.cookie('token', token);
-    res.redirect('/');
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    
+    if(passwordMatch){
+      const token = auth.generateToken({ username, role: user.role });
+      console.log("token", token)
+      console.log('Login successful:', user);
+      res.cookie('token', token);
+      res.redirect('/');
+    }
   } else {
     console.log('Login failed');
     res.redirect('/login');
